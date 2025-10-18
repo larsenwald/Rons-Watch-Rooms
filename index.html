@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ron's Rooms - Watch Parties</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --gold: #d4af37;
+        --gold-light: #f4e5b8;
+        --gold-dark: #b8941e;
+        --black: #0a0a0a;
+        --black-light: #1a1a1a;
+        --black-lighter: #2a2a2a;
+        --white: #fafafa;
+        --gray: #6a6a6a;
+      }
+
+      body {
+        font-family: "Montserrat", sans-serif;
+        background: var(--black);
+        color: var(--white);
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      /* Animated Background */
+      .background-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(
+            circle at 20% 50%,
+            rgba(212, 175, 55, 0.05) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 80% 50%,
+            rgba(212, 175, 55, 0.05) 0%,
+            transparent 50%
+          );
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .container {
+        position: relative;
+        z-index: 1;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 40px 20px;
+      }
+
+      /* Header */
+      header {
+        text-align: center;
+        margin-bottom: 60px;
+        padding: 40px 0;
+      }
+
+      .logo {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 4rem;
+        font-weight: 300;
+        letter-spacing: 8px;
+        background: linear-gradient(
+          135deg,
+          var(--gold) 0%,
+          var(--gold-light) 50%,
+          var(--gold) 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 10px;
+        text-transform: uppercase;
+      }
+
+      .tagline {
+        font-size: 0.9rem;
+        letter-spacing: 4px;
+        color: var(--gray);
+        text-transform: uppercase;
+        font-weight: 300;
+      }
+
+      .divider {
+        width: 100px;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--gold),
+          transparent
+        );
+        margin: 30px auto;
+      }
+
+      /* Setup Screen */
+      .setup-screen {
+        display: block;
+      }
+
+      .setup-screen.hidden {
+        display: none;
+      }
+
+      .setup-card {
+        background: var(--black-light);
+        border: 1px solid rgba(212, 175, 55, 0.2);
+        border-radius: 0;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 60px 50px;
+        box-shadow: 0 0 60px rgba(212, 175, 55, 0.1),
+          inset 0 0 0 1px rgba(212, 175, 55, 0.1);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .setup-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--gold),
+          transparent
+        );
+      }
+
+      .setup-card h2 {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 2rem;
+        font-weight: 300;
+        text-align: center;
+        color: var(--gold);
+        margin-bottom: 40px;
+        letter-spacing: 2px;
+      }
+
+      .input-group {
+        margin-bottom: 30px;
+      }
+
+      .input-group label {
+        display: block;
+        font-size: 0.75rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--gray);
+        margin-bottom: 12px;
+        font-weight: 500;
+      }
+
+      input[type="text"] {
+        width: 100%;
+        padding: 18px 20px;
+        background: var(--black);
+        border: 1px solid rgba(212, 175, 55, 0.3);
+        color: var(--white);
+        font-size: 1rem;
+        font-family: "Montserrat", sans-serif;
+        transition: all 0.3s ease;
+        letter-spacing: 1px;
+      }
+
+      input[type="text"]:focus {
+        outline: none;
+        border-color: var(--gold);
+        box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+      }
+
+      input[type="text"]::placeholder {
+        color: rgba(250, 250, 250, 0.3);
+        letter-spacing: 1px;
+      }
+
+      .button-group {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-top: 40px;
+      }
+
+      button {
+        padding: 18px 30px;
+        font-family: "Montserrat", sans-serif;
+        font-size: 0.85rem;
+        font-weight: 500;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 1px solid var(--gold);
+        background: transparent;
+        color: var(--gold);
+        position: relative;
+        overflow: hidden;
+      }
+
+      button::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: var(--gold);
+        transition: left 0.4s ease;
+        z-index: -1;
+      }
+
+      button:hover::before {
+        left: 0;
+      }
+
+      button:hover {
+        color: var(--black);
+      }
+
+      .btn-primary {
+        background: var(--gold);
+        color: var(--black);
+      }
+
+      .btn-primary::before {
+        background: var(--black);
+      }
+
+      .btn-primary:hover {
+        color: var(--gold);
+      }
+
+      #joinMode {
+        animation: fadeIn 0.4s ease;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Watch Screen */
+      .watch-screen {
+        display: none;
+      }
+
+      .watch-screen.active {
+        display: block;
+        animation: fadeIn 0.6s ease;
+      }
+
+      .room-header {
+        background: var(--black-light);
+        border: 1px solid rgba(212, 175, 55, 0.2);
+        padding: 30px 40px;
+        margin-bottom: 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: relative;
+      }
+
+      .room-header::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--gold),
+          transparent
+        );
+      }
+
+      .room-info-left h3 {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 0.75rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--gray);
+        margin-bottom: 8px;
+        font-weight: 400;
+      }
+
+      .room-code {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 2.5rem;
+        font-weight: 300;
+        color: var(--gold);
+        letter-spacing: 6px;
+      }
+
+      .room-info-right {
+        text-align: right;
+      }
+
+      .viewers-label {
+        font-size: 0.75rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--gray);
+        margin-bottom: 8px;
+      }
+
+      .viewer-count {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 2rem;
+        color: var(--gold);
+      }
+
+      .video-wrapper {
+        position: relative;
+        margin-bottom: 30px;
+        border: 1px solid rgba(212, 175, 55, 0.2);
+        box-shadow: 0 0 60px rgba(212, 175, 55, 0.1);
+      }
+
+      .video-container {
+        position: relative;
+        width: 100%;
+        padding-bottom: 56.25%;
+        background: var(--black);
+        overflow: hidden;
+      }
+
+      video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      .controls-panel {
+        background: var(--black-light);
+        border: 1px solid rgba(212, 175, 55, 0.2);
+        padding: 30px 40px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 30px;
+        position: relative;
+      }
+
+      .controls-panel::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--gold),
+          transparent
+        );
+      }
+
+      .control-item {
+        text-align: center;
+      }
+
+      .control-label {
+        font-size: 0.7rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--gray);
+        margin-bottom: 10px;
+        display: block;
+      }
+
+      .control-value {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 1.5rem;
+        color: var(--gold);
+      }
+
+      .sync-status {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+
+      .sync-indicator {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--gold);
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+          box-shadow: 0 0 10px var(--gold);
+        }
+        50% {
+          opacity: 0.5;
+          box-shadow: 0 0 5px var(--gold);
+        }
+      }
+
+      .btn-leave {
+        background: transparent;
+        border: 1px solid rgba(212, 175, 55, 0.3);
+        color: var(--gray);
+        padding: 12px 24px;
+        font-size: 0.75rem;
+      }
+
+      .btn-leave:hover {
+        border-color: var(--gold);
+        color: var(--gold);
+      }
+
+      .btn-leave::before {
+        display: none;
+      }
+
+      /* Footer */
+      footer {
+        text-align: center;
+        margin-top: 80px;
+        padding: 40px 0;
+        border-top: 1px solid rgba(212, 175, 55, 0.1);
+      }
+
+      .footer-text {
+        font-size: 0.7rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--gray);
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .logo {
+          font-size: 2.5rem;
+          letter-spacing: 4px;
+        }
+
+        .setup-card {
+          padding: 40px 30px;
+        }
+
+        .button-group {
+          grid-template-columns: 1fr;
+        }
+
+        .room-header {
+          flex-direction: column;
+          gap: 20px;
+          text-align: center;
+        }
+
+        .room-info-right {
+          text-align: center;
+        }
+
+        .controls-panel {
+          grid-template-columns: 1fr;
+          padding: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="background-overlay"></div>
+
+    <div class="container">
+      <header>
+        <h1 class="logo">Ron's Rooms</h1>
+        <div class="divider"></div>
+        <p class="tagline">Watch Parties for Good Company</p>
+      </header>
+
+      <!-- Setup Screen -->
+      <div class="setup-screen" id="setupScreen">
+        <div class="setup-card">
+          <h2>Enter The Experience</h2>
+
+          <div class="input-group">
+            <label>Pixeldrain File ID or URL</label>
+            <input type="text" id="videoIdInput" placeholder="abc123xyz" />
+          </div>
+
+          <div class="input-group">
+            <label>Your Name</label>
+            <input
+              type="text"
+              id="usernameInput"
+              placeholder="Guest"
+              value="Guest"
+            />
+          </div>
+
+          <div class="button-group">
+            <button class="btn-primary" onclick="createRoom()">
+              Create Room
+            </button>
+            <button onclick="showJoinMode()">Join Room</button>
+          </div>
+
+          <div id="joinMode" style="display: none; margin-top: 30px">
+            <div class="input-group">
+              <label>Room Code</label>
+              <input type="text" id="roomCodeInput" placeholder="ABCD1234" />
+            </div>
+            <button
+              class="btn-primary"
+              onclick="joinRoom()"
+              style="width: 100%"
+            >
+              Enter Room
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Watch Screen -->
+      <div class="watch-screen" id="watchScreen">
+        <div class="room-header">
+          <div class="room-info-left">
+            <h3>Room Code</h3>
+            <div class="room-code" id="displayRoomCode">----</div>
+          </div>
+          <div class="room-info-right">
+            <div class="viewers-label">Viewers</div>
+            <div class="viewer-count" id="viewerCount">1</div>
+          </div>
+        </div>
+
+        <div class="video-wrapper">
+          <div class="video-container">
+            <video id="videoPlayer" controls>
+              <source id="videoSource" type="video/mp4" />
+              Your browser doesn't support video playback.
+            </video>
+          </div>
+        </div>
+
+        <div class="controls-panel">
+          <div class="control-item">
+            <span class="control-label">Status</span>
+            <div class="sync-status">
+              <span class="sync-indicator"></span>
+              <span class="control-value" id="statusText">Synced</span>
+            </div>
+          </div>
+
+          <div class="control-item">
+            <span class="control-label">Role</span>
+            <div class="control-value" id="userRole">Host</div>
+          </div>
+
+          <div class="control-item">
+            <span class="control-label">Current Time</span>
+            <div class="control-value" id="currentTime">0:00</div>
+          </div>
+
+          <div class="control-item">
+            <button class="btn-leave" onclick="leaveRoom()">Leave Room</button>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <p class="footer-text">For Liv</p>
+      </footer>
+    </div>
+
+    <script>
+      // ============================================
+      // CONFIGURATION
+      // ============================================
+
+      // IMPORTANT: Change this to your deployed backend URL
+      // For local testing: 'ws://localhost:3000'
+      // For Railway: 'wss://your-app.railway.app'
+      // For Render: 'wss://your-app.onrender.com'
+      const WS_URL = "https://rons-rooms-server.onrender.com";
+      const API_URL = "https://rons-rooms-server.onrender.com";
+
+      // ============================================
+      // APP STATE
+      // ============================================
+
+      let currentRoom = null;
+      let isHost = false;
+      let username = "Guest";
+      let ws = null;
+      let syncEnabled = true; // Prevents feedback loops
+
+      const video = document.getElementById("videoPlayer");
+      const videoSource = document.getElementById("videoSource");
+
+      // ============================================
+      // UTILITY FUNCTIONS
+      // ============================================
+
+      function generateRoomCode() {
+        const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+        let code = "";
+        for (let i = 0; i < 8; i++) {
+          code += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return code;
+      }
+
+      function updateStatus(text, synced = true) {
+        document.getElementById("statusText").textContent = text;
+        const indicator = document.querySelector(".sync-indicator");
+        if (synced) {
+          indicator.style.background = "var(--gold)";
+        } else {
+          indicator.style.background = "#ff9800";
+        }
+      }
+
+      function showJoinMode() {
+        document.getElementById("joinMode").style.display = "block";
+      }
+
+      // ============================================
+      // WEBSOCKET CONNECTION
+      // ============================================
+
+      function connectWebSocket(roomCode) {
+        ws = new WebSocket(WS_URL);
+
+        ws.onopen = () => {
+          console.log("✅ WebSocket connected");
+          updateStatus("Connected", true);
+
+          // Join the room
+          ws.send(
+            JSON.stringify({
+              type: "join",
+              roomCode: roomCode,
+              username: username,
+            })
+          );
+        };
+
+        ws.onmessage = (event) => {
+          const data = JSON.parse(event.data);
+          handleServerMessage(data);
+        };
+
+        ws.onerror = (error) => {
+          console.error("❌ WebSocket error:", error);
+          updateStatus("Connection Error", false);
+        };
+
+        ws.onclose = () => {
+          console.log("🔌 WebSocket disconnected");
+          updateStatus("Disconnected", false);
+        };
+      }
+
+      function handleServerMessage(data) {
+        switch (data.type) {
+          case "joined":
+            console.log("✅ Successfully joined room");
+            currentRoom = {
+              code: data.roomCode,
+              videoId: data.videoId,
+            };
+            document.getElementById("viewerCount").textContent =
+              data.viewerCount;
+            updateStatus("Synced", true);
+            break;
+
+          case "sync":
+            if (!isHost && syncEnabled) {
+              handleRemoteSync(data);
+            }
+            break;
+
+          case "viewer_update":
+            document.getElementById("viewerCount").textContent =
+              data.viewerCount;
+            break;
+
+          case "error":
+            alert(data.message);
+            updateStatus("Error", false);
+            break;
+
+          default:
+            console.log("Unknown message type:", data.type);
+        }
+      }
+
+      function handleRemoteSync(data) {
+        syncEnabled = false;
+
+        const timeDiff = Math.abs(video.currentTime - data.currentTime);
+
+        // Only sync if time difference is significant (> 1 second)
+        if (timeDiff > 1) {
+          video.currentTime = data.currentTime;
+        }
+
+        if (data.action === "play") {
+          video.play().catch((err) => console.error("Play error:", err));
+        } else if (data.action === "pause") {
+          video.pause();
+        } else if (data.action === "seek") {
+          video.currentTime = data.currentTime;
+        }
+
+        updateStatus("Syncing...", false);
+
+        // Re-enable sync after 1 second to prevent feedback loops
+        setTimeout(() => {
+          syncEnabled = true;
+          updateStatus("Synced", true);
+        }, 1000);
+      }
+
+      function broadcastSync(action) {
+        if (!ws || ws.readyState !== WebSocket.OPEN || !syncEnabled) return;
+
+        ws.send(
+          JSON.stringify({
+            type: "sync",
+            action: action,
+            currentTime: video.currentTime,
+          })
+        );
+      }
+
+      // ============================================
+      // ROOM MANAGEMENT
+      // ============================================
+
+      async function createRoom() {
+        const videoId = document.getElementById("videoIdInput").value.trim();
+        username =
+          document.getElementById("usernameInput").value.trim() || "Guest";
+
+        if (!videoId) {
+          alert("Please enter a Pixeldrain file ID or URL");
+          return;
+        }
+
+        // Extract file ID from URL if needed
+        let cleanId = videoId;
+        if (videoId.includes("pixeldrain.com")) {
+          const match = videoId.match(/\/u\/([a-zA-Z0-9_-]+)/);
+          if (match) {
+            cleanId = match[1];
+          }
+        }
+
+        const roomCode = generateRoomCode();
+
+        try {
+          // Create room on server
+          const response = await fetch(`${API_URL}/api/rooms/create`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              roomCode: roomCode,
+              videoId: cleanId,
+              hostName: username,
+            }),
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            currentRoom = {
+              code: roomCode,
+              videoId: cleanId,
+            };
+            isHost = true;
+
+            // Connect to WebSocket and join room
+            connectWebSocket(roomCode);
+            startWatching();
+          } else {
+            alert(
+              "Failed to create room: " + (result.error || "Unknown error")
+            );
+          }
+        } catch (error) {
+          console.error("Error creating room:", error);
+          alert(
+            "Could not connect to server. Make sure the backend is running."
+          );
+        }
+      }
+
+      async function joinRoom() {
+        const roomCode = document
+          .getElementById("roomCodeInput")
+          .value.trim()
+          .toUpperCase();
+        username =
+          document.getElementById("usernameInput").value.trim() || "Guest";
+
+        if (!roomCode) {
+          alert("Please enter a room code");
+          return;
+        }
+
+        try {
+          // Fetch room info from server
+          const response = await fetch(`${API_URL}/api/rooms/${roomCode}`);
+          const result = await response.json();
+
+          if (result.success) {
+            currentRoom = {
+              code: result.room.code,
+              videoId: result.room.videoId,
+            };
+            isHost = false;
+
+            // Connect to WebSocket and join room
+            connectWebSocket(roomCode);
+            startWatching();
+          } else {
+            alert("Room not found");
+          }
+        } catch (error) {
+          console.error("Error joining room:", error);
+          alert(
+            "Could not connect to server. Make sure the backend is running."
+          );
+        }
+      }
+
+      function startWatching() {
+        // Hide setup, show watch screen
+        document.getElementById("setupScreen").classList.add("hidden");
+        document.getElementById("watchScreen").classList.add("active");
+
+        // Set video source
+        const streamUrl = `https://pixeldrain.com/api/file/${currentRoom.videoId}`;
+        videoSource.src = streamUrl;
+        video.load();
+
+        // Update UI
+        document.getElementById("displayRoomCode").textContent =
+          currentRoom.code;
+        document.getElementById("userRole").textContent = isHost
+          ? "Host"
+          : "Viewer";
+
+        // Setup event listeners
+        setupVideoSync();
+
+        // Try to play
+        video.play().catch((err) => {
+          console.error("Playback error:", err);
+        });
+      }
+
+      // ============================================
+      // VIDEO SYNC
+      // ============================================
+
+      function setupVideoSync() {
+        // Update current time display
+        video.addEventListener("timeupdate", () => {
+          const mins = Math.floor(video.currentTime / 60);
+          const secs = Math.floor(video.currentTime % 60);
+          document.getElementById("currentTime").textContent = `${mins}:${secs
+            .toString()
+            .padStart(2, "0")}`;
+        });
+
+        if (isHost) {
+          // Host broadcasts all actions
+          video.addEventListener("play", () => {
+            console.log("▶️ Host played video at", video.currentTime);
+            broadcastSync("play");
+          });
+
+          video.addEventListener("pause", () => {
+            console.log("⏸️ Host paused video at", video.currentTime);
+            broadcastSync("pause");
+          });
+
+          video.addEventListener("seeked", () => {
+            console.log("⏭️ Host seeked to", video.currentTime);
+            broadcastSync("seek");
+          });
+        }
+      }
+
+      function leaveRoom() {
+        // Send leave message to server
+        if (ws && ws.readyState === WebSocket.OPEN) {
+          ws.send(JSON.stringify({ type: "leave" }));
+          ws.close();
+        }
+
+        video.pause();
+        currentRoom = null;
+        isHost = false;
+        ws = null;
+
+        document.getElementById("setupScreen").classList.remove("hidden");
+        document.getElementById("watchScreen").classList.remove("active");
+        document.getElementById("joinMode").style.display = "none";
+
+        // Clear inputs
+        document.getElementById("videoIdInput").value = "";
+        document.getElementById("roomCodeInput").value = "";
+      }
+    </script>
+  </body>
+</html>
