@@ -610,7 +610,7 @@
       // For local testing: 'ws://localhost:3000'
       // For Railway: 'wss://your-app.railway.app'
       // For Render: 'wss://your-app.onrender.com'
-      const WS_URL = "https://rons-rooms-server.onrender.com";
+      const WS_URL = "wss://rons-rooms-server.onrender.com";
       const API_URL = "https://rons-rooms-server.onrender.com";
 
       // ============================================
@@ -700,7 +700,30 @@
             };
             document.getElementById("viewerCount").textContent =
               data.viewerCount;
-            updateStatus("Synced", true);
+
+            // FIXED: Apply the room's current state when joining
+            if (data.state && !isHost) {
+              console.log("🔄 Syncing to room state:", data.state);
+              syncEnabled = false;
+
+              // Set the video time
+              video.currentTime = data.state.currentTime || 0;
+
+              // Apply play/pause state based on the action
+              if (data.state.action === "play") {
+                video.play().catch((err) => console.error("Play error:", err));
+              } else if (data.state.action === "pause") {
+                video.pause();
+              }
+
+              // Re-enable sync after state is applied
+              setTimeout(() => {
+                syncEnabled = true;
+                updateStatus("Synced", true);
+              }, 1000);
+            } else {
+              updateStatus("Synced", true);
+            }
             break;
 
           case "sync":
@@ -884,10 +907,12 @@
         // Setup event listeners
         setupVideoSync();
 
-        // Try to play
-        video.play().catch((err) => {
-          console.error("Playback error:", err);
-        });
+        // FIXED: Only auto-play for host, viewers will sync to room state
+        if (isHost) {
+          video.play().catch((err) => {
+            console.error("Playback error:", err);
+          });
+        }
       }
 
       // ============================================
