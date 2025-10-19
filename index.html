@@ -27,6 +27,9 @@
         --black-lighter: #2a2a2a;
         --white: #fafafa;
         --gray: #6a6a6a;
+        --red: #ff4444;
+        --orange: #ff9800;
+        --green: #4caf50;
       }
 
       body {
@@ -37,7 +40,6 @@
         overflow-x: hidden;
       }
 
-      /* Animated Background */
       .background-overlay {
         position: fixed;
         top: 0;
@@ -66,7 +68,6 @@
         padding: 40px 20px;
       }
 
-      /* Header */
       header {
         text-align: center;
         margin-bottom: 60px;
@@ -109,6 +110,122 @@
           transparent
         );
         margin: 30px auto;
+      }
+
+      /* Loading Overlay */
+      .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(10, 10, 10, 0.95);
+        z-index: 9999;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(5px);
+      }
+
+      .loading-overlay.active {
+        display: flex;
+      }
+
+      .loading-content {
+        text-align: center;
+        padding: 60px 40px;
+        background: var(--black-light);
+        border: 1px solid rgba(212, 175, 55, 0.3);
+        max-width: 500px;
+        position: relative;
+      }
+
+      .loading-content::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--gold),
+          transparent
+        );
+      }
+
+      .loading-spinner {
+        width: 60px;
+        height: 60px;
+        border: 3px solid rgba(212, 175, 55, 0.2);
+        border-top-color: var(--gold);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 30px;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .loading-text {
+        font-size: 0.85rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--gold);
+        margin-bottom: 15px;
+      }
+
+      .loading-subtext {
+        font-size: 0.75rem;
+        letter-spacing: 1px;
+        color: var(--gray);
+      }
+
+      .loading-bar {
+        width: 100%;
+        height: 3px;
+        background: rgba(212, 175, 55, 0.1);
+        margin-top: 20px;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .loading-bar-fill {
+        height: 100%;
+        background: var(--gold);
+        width: 0%;
+        transition: width 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .loading-bar-fill::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.3),
+          transparent
+        );
+        animation: shimmer 1.5s infinite;
+      }
+
+      @keyframes shimmer {
+        0% {
+          transform: translateX(-100%);
+        }
+        100% {
+          transform: translateX(100%);
+        }
       }
 
       /* Setup Screen */
@@ -218,6 +335,11 @@
         overflow: hidden;
       }
 
+      button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
       button::before {
         content: "";
         position: absolute;
@@ -230,11 +352,11 @@
         z-index: -1;
       }
 
-      button:hover::before {
+      button:hover:not(:disabled)::before {
         left: 0;
       }
 
-      button:hover {
+      button:hover:not(:disabled) {
         color: var(--black);
       }
 
@@ -247,7 +369,7 @@
         background: var(--black);
       }
 
-      .btn-primary:hover {
+      .btn-primary:hover:not(:disabled) {
         color: var(--gold);
       }
 
@@ -338,6 +460,74 @@
         color: var(--gold);
       }
 
+      /* Sync Status Alert */
+      .sync-alert {
+        background: var(--black-light);
+        border: 2px solid var(--gold);
+        padding: 20px 30px;
+        margin-bottom: 20px;
+        display: none;
+        align-items: center;
+        gap: 20px;
+        position: relative;
+        animation: slideDown 0.3s ease;
+      }
+
+      .sync-alert.active {
+        display: flex;
+      }
+
+      .sync-alert.warning {
+        border-color: var(--orange);
+      }
+
+      .sync-alert.error {
+        border-color: var(--red);
+      }
+
+      .sync-alert.success {
+        border-color: var(--green);
+      }
+
+      @keyframes slideDown {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .sync-alert-icon {
+        width: 40px;
+        height: 40px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+      }
+
+      .sync-alert-content {
+        flex: 1;
+      }
+
+      .sync-alert-title {
+        font-size: 0.85rem;
+        font-weight: 600;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        margin-bottom: 5px;
+      }
+
+      .sync-alert-message {
+        font-size: 0.75rem;
+        color: var(--gray);
+        letter-spacing: 0.5px;
+      }
+
       .video-wrapper {
         position: relative;
         margin-bottom: 30px;
@@ -359,6 +549,45 @@
         left: 0;
         width: 100%;
         height: 100%;
+      }
+
+      /* Video Loading Overlay */
+      .video-loading {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(10, 10, 10, 0.9);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+      }
+
+      .video-loading.active {
+        display: flex;
+      }
+
+      .video-loading-content {
+        text-align: center;
+      }
+
+      .video-loading-spinner {
+        width: 50px;
+        height: 50px;
+        border: 3px solid rgba(212, 175, 55, 0.2);
+        border-top-color: var(--gold);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 20px;
+      }
+
+      .video-loading-text {
+        font-size: 0.85rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--gold);
       }
 
       .controls-panel {
@@ -413,23 +642,151 @@
       }
 
       .sync-indicator {
-        width: 8px;
-        height: 8px;
+        width: 12px;
+        height: 12px;
         border-radius: 50%;
         background: var(--gold);
+        position: relative;
+      }
+
+      .sync-indicator.synced {
+        background: var(--green);
         animation: pulse 2s infinite;
+      }
+
+      .sync-indicator.syncing {
+        background: var(--orange);
+        animation: blink 0.5s infinite;
+      }
+
+      .sync-indicator.waiting {
+        background: var(--gray);
+        animation: blink 1s infinite;
+      }
+
+      .sync-indicator.error {
+        background: var(--red);
+        animation: none;
       }
 
       @keyframes pulse {
         0%,
         100% {
           opacity: 1;
-          box-shadow: 0 0 10px var(--gold);
+          box-shadow: 0 0 10px currentColor;
         }
         50% {
-          opacity: 0.5;
-          box-shadow: 0 0 5px var(--gold);
+          opacity: 0.7;
+          box-shadow: 0 0 20px currentColor;
         }
+      }
+
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.3;
+        }
+      }
+
+      /* Host Sync Dashboard */
+      .host-sync-dashboard {
+        background: var(--black-light);
+        border: 1px solid rgba(212, 175, 55, 0.2);
+        padding: 30px 40px;
+        margin-bottom: 30px;
+        display: none;
+        position: relative;
+      }
+
+      .host-sync-dashboard.active {
+        display: block;
+      }
+
+      .host-sync-dashboard::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--gold),
+          transparent
+        );
+      }
+
+      .sync-dashboard-header {
+        text-align: center;
+        margin-bottom: 25px;
+      }
+
+      .sync-dashboard-title {
+        font-size: 0.75rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--gray);
+        margin-bottom: 10px;
+      }
+
+      .sync-dashboard-status {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 1.8rem;
+        font-weight: 300;
+        letter-spacing: 2px;
+      }
+
+      .sync-dashboard-status.all-synced {
+        color: var(--green);
+      }
+
+      .sync-dashboard-status.waiting {
+        color: var(--orange);
+      }
+
+      .sync-dashboard-status.error {
+        color: var(--red);
+      }
+
+      .sync-progress-bar {
+        width: 100%;
+        height: 8px;
+        background: rgba(212, 175, 55, 0.1);
+        margin-top: 20px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .sync-progress-fill {
+        height: 100%;
+        background: var(--green);
+        width: 0%;
+        transition: width 0.5s ease;
+        position: relative;
+      }
+
+      .sync-progress-fill.partial {
+        background: var(--orange);
+      }
+
+      .sync-progress-fill::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.3),
+          transparent
+        );
+        animation: shimmer 2s infinite;
       }
 
       .btn-leave {
@@ -449,7 +806,6 @@
         display: none;
       }
 
-      /* Footer */
       footer {
         text-align: center;
         margin-top: 80px;
@@ -464,7 +820,6 @@
         color: var(--gray);
       }
 
-      /* Responsive */
       @media (max-width: 768px) {
         .logo {
           font-size: 2.5rem;
@@ -493,11 +848,30 @@
           grid-template-columns: 1fr;
           padding: 20px;
         }
+
+        .sync-alert {
+          flex-direction: column;
+          text-align: center;
+        }
       }
     </style>
   </head>
   <body>
     <div class="background-overlay"></div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+      <div class="loading-content">
+        <div class="loading-spinner"></div>
+        <div class="loading-text" id="loadingText">Connecting...</div>
+        <div class="loading-subtext" id="loadingSubtext">
+          Please wait while we establish connection
+        </div>
+        <div class="loading-bar">
+          <div class="loading-bar-fill" id="loadingBarFill"></div>
+        </div>
+      </div>
+    </div>
 
     <div class="container">
       <header>
@@ -527,10 +901,10 @@
           </div>
 
           <div class="button-group">
-            <button class="btn-primary" onclick="createRoom()">
+            <button class="btn-primary" onclick="createRoom()" id="createBtn">
               Create Room
             </button>
-            <button onclick="showJoinMode()">Join Room</button>
+            <button onclick="showJoinMode()" id="joinModeBtn">Join Room</button>
           </div>
 
           <div id="joinMode" style="display: none; margin-top: 30px">
@@ -541,6 +915,7 @@
             <button
               class="btn-primary"
               onclick="joinRoom()"
+              id="joinBtn"
               style="width: 100%"
             >
               Enter Room
@@ -551,6 +926,33 @@
 
       <!-- Watch Screen -->
       <div class="watch-screen" id="watchScreen">
+        <!-- Sync Alert -->
+        <div class="sync-alert" id="syncAlert">
+          <div class="sync-alert-icon" id="syncAlertIcon">⚠️</div>
+          <div class="sync-alert-content">
+            <div class="sync-alert-title" id="syncAlertTitle">Syncing...</div>
+            <div class="sync-alert-message" id="syncAlertMessage">
+              Waiting for all viewers to sync
+            </div>
+          </div>
+        </div>
+
+        <!-- Host Sync Dashboard -->
+        <div class="host-sync-dashboard" id="hostSyncDashboard">
+          <div class="sync-dashboard-header">
+            <div class="sync-dashboard-title">Viewer Sync Status</div>
+            <div
+              class="sync-dashboard-status all-synced"
+              id="syncDashboardStatus"
+            >
+              ALL VIEWERS SYNCED
+            </div>
+          </div>
+          <div class="sync-progress-bar">
+            <div class="sync-progress-fill" id="syncProgressFill"></div>
+          </div>
+        </div>
+
         <div class="room-header">
           <div class="room-info-left">
             <h3>Room Code</h3>
@@ -568,15 +970,26 @@
               <source id="videoSource" type="video/mp4" />
               Your browser doesn't support video playback.
             </video>
+            <div class="video-loading" id="videoLoading">
+              <div class="video-loading-content">
+                <div class="video-loading-spinner"></div>
+                <div class="video-loading-text">Loading Video...</div>
+              </div>
+            </div>
           </div>
         </div>
 
         <div class="controls-panel">
           <div class="control-item">
-            <span class="control-label">Status</span>
+            <span class="control-label">Connection</span>
             <div class="sync-status">
-              <span class="sync-indicator"></span>
-              <span class="control-value" id="statusText">Synced</span>
+              <span
+                class="sync-indicator waiting"
+                id="connectionIndicator"
+              ></span>
+              <span class="control-value" id="connectionStatus"
+                >Connecting</span
+              >
             </div>
           </div>
 
@@ -602,29 +1015,184 @@
     </div>
 
     <script>
-      // ============================================
-      // CONFIGURATION
-      // ============================================
-
-      // IMPORTANT: Change this to your deployed backend URL
-      // For local testing: 'ws://localhost:3000'
-      // For Railway: 'wss://your-app.railway.app'
-      // For Render: 'wss://your-app.onrender.com'
       const WS_URL = "wss://rons-rooms-server.onrender.com";
       const API_URL = "https://rons-rooms-server.onrender.com";
-
-      // ============================================
-      // APP STATE
-      // ============================================
 
       let currentRoom = null;
       let isHost = false;
       let username = "Guest";
       let ws = null;
-      let syncEnabled = true; // Prevents feedback loops
+      let syncEnabled = true;
+      let awaitingSyncConfirmation = false;
+      let syncedViewers = new Set();
+      let totalViewers = 0;
 
       const video = document.getElementById("videoPlayer");
       const videoSource = document.getElementById("videoSource");
+
+      // ============================================
+      // LOADING STATES
+      // ============================================
+
+      function showLoading(text, subtext) {
+        document.getElementById("loadingText").textContent = text;
+        document.getElementById("loadingSubtext").textContent = subtext;
+        document.getElementById("loadingOverlay").classList.add("active");
+        animateLoadingBar();
+      }
+
+      function hideLoading() {
+        document.getElementById("loadingOverlay").classList.remove("active");
+        document.getElementById("loadingBarFill").style.width = "0%";
+      }
+
+      function animateLoadingBar() {
+        const fill = document.getElementById("loadingBarFill");
+        let progress = 0;
+        const interval = setInterval(() => {
+          progress += Math.random() * 15;
+          if (progress >= 90) {
+            clearInterval(interval);
+            fill.style.width = "90%";
+          } else {
+            fill.style.width = progress + "%";
+          }
+        }, 200);
+      }
+
+      function showVideoLoading() {
+        document.getElementById("videoLoading").classList.add("active");
+      }
+
+      function hideVideoLoading() {
+        document.getElementById("videoLoading").classList.remove("active");
+      }
+
+      // ============================================
+      // SYNC ALERTS
+      // ============================================
+
+      function showSyncAlert(type, title, message) {
+        const alert = document.getElementById("syncAlert");
+        const icon = document.getElementById("syncAlertIcon");
+        const titleEl = document.getElementById("syncAlertTitle");
+        const messageEl = document.getElementById("syncAlertMessage");
+
+        alert.className = "sync-alert active " + type;
+        titleEl.textContent = title;
+        messageEl.textContent = message;
+
+        switch (type) {
+          case "success":
+            icon.textContent = "✓";
+            break;
+          case "warning":
+            icon.textContent = "⚠";
+            break;
+          case "error":
+            icon.textContent = "✕";
+            break;
+          default:
+            icon.textContent = "◉";
+        }
+      }
+
+      function hideSyncAlert() {
+        document.getElementById("syncAlert").classList.remove("active");
+      }
+
+      // ============================================
+      // HOST SYNC DASHBOARD
+      // ============================================
+
+      function updateHostSyncDashboard() {
+        if (!isHost) return;
+
+        const dashboard = document.getElementById("hostSyncDashboard");
+        const status = document.getElementById("syncDashboardStatus");
+        const progressFill = document.getElementById("syncProgressFill");
+
+        dashboard.classList.add("active");
+
+        const syncPercentage =
+          totalViewers > 1
+            ? (syncedViewers.size / (totalViewers - 1)) * 100
+            : 100;
+
+        progressFill.style.width = syncPercentage + "%";
+
+        if (awaitingSyncConfirmation) {
+          status.className = "sync-dashboard-status waiting";
+          status.textContent = `WAITING FOR SYNC (${syncedViewers.size}/${
+            totalViewers - 1
+          })`;
+          progressFill.classList.add("partial");
+
+          showSyncAlert(
+            "warning",
+            "Syncing Viewers",
+            `${syncedViewers.size} of ${
+              totalViewers - 1
+            } viewers confirmed sync`
+          );
+        } else if (syncPercentage === 100) {
+          status.className = "sync-dashboard-status all-synced";
+          status.textContent =
+            totalViewers > 1 ? "ALL VIEWERS SYNCED" : "READY TO STREAM";
+          progressFill.classList.remove("partial");
+          hideSyncAlert();
+        }
+      }
+
+      function markViewerSynced(userId) {
+        syncedViewers.add(userId);
+        updateHostSyncDashboard();
+
+        // If all viewers are synced, clear the waiting state
+        if (syncedViewers.size >= totalViewers - 1 && totalViewers > 1) {
+          awaitingSyncConfirmation = false;
+          showSyncAlert(
+            "success",
+            "All Viewers Synced",
+            "Everyone is on the same page"
+          );
+          setTimeout(hideSyncAlert, 3000);
+        }
+      }
+
+      function resetSyncStatus() {
+        syncedViewers.clear();
+        awaitingSyncConfirmation = true;
+        updateHostSyncDashboard();
+      }
+
+      // ============================================
+      // CONNECTION STATUS
+      // ============================================
+
+      function updateConnectionStatus(status, synced = false) {
+        const indicator = document.getElementById("connectionIndicator");
+        const statusText = document.getElementById("connectionStatus");
+
+        statusText.textContent = status;
+
+        indicator.className = "sync-indicator";
+
+        if (synced) {
+          indicator.classList.add("synced");
+        } else if (status === "Syncing...") {
+          indicator.classList.add("syncing");
+        } else if (status === "Connecting" || status === "Waiting") {
+          indicator.classList.add("waiting");
+        } else if (
+          status.includes("Error") ||
+          status.includes("Disconnected")
+        ) {
+          indicator.classList.add("error");
+        } else {
+          indicator.classList.add("waiting");
+        }
+      }
 
       // ============================================
       // UTILITY FUNCTIONS
@@ -639,16 +1207,6 @@
         return code;
       }
 
-      function updateStatus(text, synced = true) {
-        document.getElementById("statusText").textContent = text;
-        const indicator = document.querySelector(".sync-indicator");
-        if (synced) {
-          indicator.style.background = "var(--gold)";
-        } else {
-          indicator.style.background = "#ff9800";
-        }
-      }
-
       function showJoinMode() {
         document.getElementById("joinMode").style.display = "block";
       }
@@ -658,13 +1216,14 @@
       // ============================================
 
       function connectWebSocket(roomCode) {
+        updateConnectionStatus("Connecting");
+
         ws = new WebSocket(WS_URL);
 
         ws.onopen = () => {
           console.log("✅ WebSocket connected");
-          updateStatus("Connected", true);
+          updateConnectionStatus("Connected", true);
 
-          // Join the room
           ws.send(
             JSON.stringify({
               type: "join",
@@ -681,12 +1240,18 @@
 
         ws.onerror = (error) => {
           console.error("❌ WebSocket error:", error);
-          updateStatus("Connection Error", false);
+          updateConnectionStatus("Connection Error");
+          showSyncAlert(
+            "error",
+            "Connection Error",
+            "Unable to connect to server"
+          );
         };
 
         ws.onclose = () => {
           console.log("🔌 WebSocket disconnected");
-          updateStatus("Disconnected", false);
+          updateConnectionStatus("Disconnected");
+          showSyncAlert("error", "Disconnected", "Connection to server lost");
         };
       }
 
@@ -698,32 +1263,46 @@
               code: data.roomCode,
               videoId: data.videoId,
             };
-            document.getElementById("viewerCount").textContent =
-              data.viewerCount;
 
-            // FIXED: Apply the room's current state when joining
+            totalViewers = data.viewerCount;
+            document.getElementById("viewerCount").textContent = totalViewers;
+
             if (data.state && !isHost) {
               console.log("🔄 Syncing to room state:", data.state);
+              updateConnectionStatus("Syncing...");
+              showVideoLoading();
+
               syncEnabled = false;
 
-              // Set the video time
               video.currentTime = data.state.currentTime || 0;
 
-              // Apply play/pause state based on the action
               if (data.state.action === "play") {
                 video.play().catch((err) => console.error("Play error:", err));
               } else if (data.state.action === "pause") {
                 video.pause();
               }
 
-              // Re-enable sync after state is applied
               setTimeout(() => {
                 syncEnabled = true;
-                updateStatus("Synced", true);
+                updateConnectionStatus("Synced", true);
+                hideVideoLoading();
+
+                // Send sync confirmation to host
+                ws.send(
+                  JSON.stringify({
+                    type: "sync_ack",
+                    timestamp: Date.now(),
+                  })
+                );
               }, 1000);
             } else {
-              updateStatus("Synced", true);
+              updateConnectionStatus("Synced", true);
+              if (isHost) {
+                updateHostSyncDashboard();
+              }
             }
+
+            hideLoading();
             break;
 
           case "sync":
@@ -732,14 +1311,26 @@
             }
             break;
 
+          case "sync_ack":
+            if (isHost) {
+              markViewerSynced(data.userId);
+            }
+            break;
+
           case "viewer_update":
-            document.getElementById("viewerCount").textContent =
-              data.viewerCount;
+            totalViewers = data.viewerCount;
+            document.getElementById("viewerCount").textContent = totalViewers;
+
+            if (isHost) {
+              // Reset sync status when viewer count changes
+              resetSyncStatus();
+            }
             break;
 
           case "error":
+            hideLoading();
             alert(data.message);
-            updateStatus("Error", false);
+            updateConnectionStatus("Error");
             break;
 
           default:
@@ -749,10 +1340,11 @@
 
       function handleRemoteSync(data) {
         syncEnabled = false;
+        updateConnectionStatus("Syncing...");
+        showVideoLoading();
 
         const timeDiff = Math.abs(video.currentTime - data.currentTime);
 
-        // Only sync if time difference is significant (> 1 second)
         if (timeDiff > 1) {
           video.currentTime = data.currentTime;
         }
@@ -765,17 +1357,30 @@
           video.currentTime = data.currentTime;
         }
 
-        updateStatus("Syncing...", false);
-
-        // Re-enable sync after 1 second to prevent feedback loops
         setTimeout(() => {
           syncEnabled = true;
-          updateStatus("Synced", true);
+          updateConnectionStatus("Synced", true);
+          hideVideoLoading();
+
+          // Send sync acknowledgment
+          if (ws && ws.readyState === WebSocket.OPEN) {
+            ws.send(
+              JSON.stringify({
+                type: "sync_ack",
+                timestamp: Date.now(),
+              })
+            );
+          }
         }, 1000);
       }
 
       function broadcastSync(action) {
         if (!ws || ws.readyState !== WebSocket.OPEN || !syncEnabled) return;
+
+        // Reset sync tracking for host
+        if (isHost) {
+          resetSyncStatus();
+        }
 
         ws.send(
           JSON.stringify({
@@ -800,7 +1405,6 @@
           return;
         }
 
-        // Extract file ID from URL if needed
         let cleanId = videoId;
         if (videoId.includes("pixeldrain.com")) {
           const match = videoId.match(/\/u\/([a-zA-Z0-9_-]+)/);
@@ -811,8 +1415,13 @@
 
         const roomCode = generateRoomCode();
 
+        // Disable buttons
+        document.getElementById("createBtn").disabled = true;
+        document.getElementById("joinModeBtn").disabled = true;
+
+        showLoading("Creating Room...", "Setting up your watch party");
+
         try {
-          // Create room on server
           const response = await fetch(`${API_URL}/api/rooms/create`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -832,19 +1441,25 @@
             };
             isHost = true;
 
-            // Connect to WebSocket and join room
+            showLoading("Connecting...", "Establishing secure connection");
             connectWebSocket(roomCode);
             startWatching();
           } else {
+            hideLoading();
             alert(
               "Failed to create room: " + (result.error || "Unknown error")
             );
+            document.getElementById("createBtn").disabled = false;
+            document.getElementById("joinModeBtn").disabled = false;
           }
         } catch (error) {
+          hideLoading();
           console.error("Error creating room:", error);
           alert(
             "Could not connect to server. Make sure the backend is running."
           );
+          document.getElementById("createBtn").disabled = false;
+          document.getElementById("joinModeBtn").disabled = false;
         }
       }
 
@@ -861,8 +1476,11 @@
           return;
         }
 
+        document.getElementById("joinBtn").disabled = true;
+
+        showLoading("Finding Room...", "Searching for " + roomCode);
+
         try {
-          // Fetch room info from server
           const response = await fetch(`${API_URL}/api/rooms/${roomCode}`);
           const result = await response.json();
 
@@ -873,41 +1491,42 @@
             };
             isHost = false;
 
-            // Connect to WebSocket and join room
+            showLoading("Joining Room...", "Connecting to watch party");
             connectWebSocket(roomCode);
             startWatching();
           } else {
+            hideLoading();
             alert("Room not found");
+            document.getElementById("joinBtn").disabled = false;
           }
         } catch (error) {
+          hideLoading();
           console.error("Error joining room:", error);
           alert(
             "Could not connect to server. Make sure the backend is running."
           );
+          document.getElementById("joinBtn").disabled = false;
         }
       }
 
       function startWatching() {
-        // Hide setup, show watch screen
         document.getElementById("setupScreen").classList.add("hidden");
         document.getElementById("watchScreen").classList.add("active");
 
-        // Set video source
         const streamUrl = `https://pixeldrain.com/api/file/${currentRoom.videoId}`;
         videoSource.src = streamUrl;
+
+        showVideoLoading();
         video.load();
 
-        // Update UI
         document.getElementById("displayRoomCode").textContent =
           currentRoom.code;
         document.getElementById("userRole").textContent = isHost
           ? "Host"
           : "Viewer";
 
-        // Setup event listeners
         setupVideoSync();
 
-        // FIXED: Only auto-play for host, viewers will sync to room state
         if (isHost) {
           video.play().catch((err) => {
             console.error("Playback error:", err);
@@ -920,7 +1539,19 @@
       // ============================================
 
       function setupVideoSync() {
-        // Update current time display
+        // Hide video loading when ready
+        video.addEventListener("canplay", () => {
+          hideVideoLoading();
+        });
+
+        video.addEventListener("waiting", () => {
+          showVideoLoading();
+        });
+
+        video.addEventListener("playing", () => {
+          hideVideoLoading();
+        });
+
         video.addEventListener("timeupdate", () => {
           const mins = Math.floor(video.currentTime / 60);
           const secs = Math.floor(video.currentTime % 60);
@@ -930,7 +1561,6 @@
         });
 
         if (isHost) {
-          // Host broadcasts all actions
           video.addEventListener("play", () => {
             console.log("▶️ Host played video at", video.currentTime);
             broadcastSync("play");
@@ -949,7 +1579,6 @@
       }
 
       function leaveRoom() {
-        // Send leave message to server
         if (ws && ws.readyState === WebSocket.OPEN) {
           ws.send(JSON.stringify({ type: "leave" }));
           ws.close();
@@ -959,14 +1588,23 @@
         currentRoom = null;
         isHost = false;
         ws = null;
+        syncedViewers.clear();
+        awaitingSyncConfirmation = false;
+        totalViewers = 0;
 
         document.getElementById("setupScreen").classList.remove("hidden");
         document.getElementById("watchScreen").classList.remove("active");
         document.getElementById("joinMode").style.display = "none";
+        document.getElementById("hostSyncDashboard").classList.remove("active");
 
-        // Clear inputs
         document.getElementById("videoIdInput").value = "";
         document.getElementById("roomCodeInput").value = "";
+        document.getElementById("createBtn").disabled = false;
+        document.getElementById("joinModeBtn").disabled = false;
+        document.getElementById("joinBtn").disabled = false;
+
+        hideSyncAlert();
+        updateConnectionStatus("Disconnected");
       }
     </script>
   </body>
